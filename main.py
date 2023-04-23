@@ -38,3 +38,5 @@ model = rn50.build_resnet50()
 train = TrainTest(epochs,train_ds,test_ds,val_ds,plot_learning_curve)
 # train and evaluate model
 train.train(model)
+
+model.save('model.h5')
