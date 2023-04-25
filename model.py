@@ -56,7 +56,7 @@ class ResNet50:
         model = self.add_custom_layers(mod,inputs)
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                       loss=tf.keras.losses.CategoricalCrossentropy(from_logits=False),
-                      metrics=[tf.keras.metrics.BinaryAccuracy(name='accuracy'),
+                      metrics=[tf.keras.metrics.CategoricalAccuracy(name='accuracy'),
                                tf.keras.metrics.Precision(name='precision'),
                                tf.keras.metrics.Recall(name='recall')])
 
