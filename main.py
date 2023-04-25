@@ -69,6 +69,7 @@ rn50 = ResNet50(input_shape=shape, include_top=False,weights_src=weights,learnin
 # build custom model based on resnet 50
 model = rn50.build_resnet50()
 
+# generate variables name for storing files
 time_str = get_time_str()
 plot_fig_name = get_plot_name(time_str)
 saved_model_name = get_model_name(time_str)
