@@ -1,0 +1,2 @@
+Train time: 2023_04_26 02_42 -  Accuracy/precision/recall scores on the test dataset: 0.748/0.777/0.721 loss: 0.675
+Train time: 2023_04_26 02_48 -  Accuracy/precision/recall scores on the test dataset: 0.816/0.832/0.796 loss: 0.541

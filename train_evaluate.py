@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping
+
 
 class TrainTest:
-    def __init__(self,epochs, train_ds, test_ds, val_ds, plot_learn_curve = False,
-                 plot_filename=None,print_images=False):
+    def __init__(self, epochs, train_ds, test_ds, val_ds, plot_learn_curve=False,
+                 plot_filename=None, print_images=False, use_early_stop=True, early_stop_patience=3,
+                 early_stop_monitor='val_loss'):
         self.epochs = epochs
         self.val_ds = val_ds
         self.train_ds = train_ds
@@ -12,6 +15,10 @@ class TrainTest:
         self.plot_learn_curve = plot_learn_curve
         self.plot_filename = plot_filename
         self.print_images = print_images
+        self.use_early_stop = use_early_stop
+        self.early_stop_patience = early_stop_patience
+        self.early_stop_monitor = early_stop_monitor
+
     # print some images from the training set
     def print_loaded_image(self):
         # Get the first batch of images and labels from your train dataset
@@ -39,16 +46,21 @@ class TrainTest:
 
         plt.show()
 
-    def train(self,model):
+    def train(self, model):
         model.summary()
         if self.print_images:
             self.print_loaded_image()
-        hist = model.fit(self.train_ds, epochs=self.epochs, validation_data=self.val_ds)
+        hist = model.fit(self.train_ds, epochs=self.epochs, validation_data=self.val_ds,
+                         callbacks=[] if not self.use_early_stop
+                         else [tf.keras.callbacks.EarlyStopping(monitor=self.early_stop_monitor,
+                                                                patience=self.early_stop_patience,
+                                                                verbose=1)])
         loss, accuracy, precision, recall = model.evaluate(self.test_ds)
-        print(f' Accuracy/precision/recall scores on the test dataset: '
-              f'{accuracy:.3f}/{precision:.3f}/{recall:.3f} loss: {loss:.3f}')
+        msg = f' Accuracy/precision/recall scores on the test dataset: '\
+              f'{accuracy:.3f}/{precision:.3f}/{recall:.3f} loss: {loss:.3f}'
+        print(msg)
         self.plot_learning_curves(hist)
-        return hist
+        return hist, msg
 
     def plot_learning_curves(self, hist):
         if self.plot_learn_curve:
