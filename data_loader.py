@@ -1,7 +1,8 @@
 import tensorflow as tf
 
+
 class DataLoader:
-    def __init__(self, height, width, batch_size,parent_dir,use_prefetch=True, color_mode='rgb'):
+    def __init__(self, height, width, batch_size, parent_dir, use_prefetch=True, color_mode='rgb'):
         self.image_height = height
         self.image_width = width
         self.batch_size = batch_size
@@ -21,7 +22,7 @@ class DataLoader:
                 shuffle=True,
                 batch_size=self.batch_size,
                 image_size=(self.image_height, self.image_width),
-                color_mode=self.color_mode,
+                color_mode=self.color_mode
             )
             # Convert labels to one-hot vectors
             self.class_names = ds.class_names
@@ -32,13 +33,15 @@ class DataLoader:
 
     def print_dataset_details(self, dataset):
         print(f'Dataset type is {type(dataset)}')
-        print(f' in the training set {len(self.class_names)} class names to classify the images for: {self.class_names}')
+        print(f' in the training set {len(self.class_names)} class names to classify the images for: '
+              f'{self.class_names}')
         for image_batch, labels_batch in dataset:
             print(f'image batch shape: {image_batch.shape}')
             print(f'image label shape: {labels_batch.shape}')
             break
 
-    def use_buffered_prefetching(self, train, val, test):
+    @staticmethod
+    def use_buffered_prefetching(train, val, test):
         def use_buffered_prefetching_for(dataset):
             return dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
@@ -47,6 +50,6 @@ class DataLoader:
     def load_data(self):
         train_ds, val_ds, test_ds = self.load_data_from_folder()
         if self.use_prefetch:
-            return self.use_buffered_prefetching(train_ds,val_ds,test_ds)
+            return self.use_buffered_prefetching(train_ds, val_ds, test_ds)
         else:
             return train_ds, val_ds, test_ds
