@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping
 
 
 class TrainTest:
@@ -55,9 +54,9 @@ class TrainTest:
                          else [tf.keras.callbacks.EarlyStopping(monitor=self.early_stop_monitor,
                                                                 patience=self.early_stop_patience,
                                                                 verbose=1)])
-        loss, accuracy, precision, recall = model.evaluate(self.test_ds)
-        msg = f' Accuracy/precision/recall scores on the test dataset: '\
-              f'{accuracy:.3f}/{precision:.3f}/{recall:.3f} loss: {loss:.3f}'
+        loss, accuracy, precision, recall, f1_score = model.evaluate(self.test_ds)
+        msg = f' F1_Score/Accuracy/precision/recall/ scores on the test dataset: '\
+              f'{f1_score:.3f}/{accuracy:.3f}/{precision:.3f}/{recall:.3f} loss: {loss:.3f}'
         print(msg)
         self.plot_learning_curves(hist)
         return hist, msg

@@ -1,4 +1,5 @@
-from data_loader import DataLoader
+# from data_loader import DataLoader
+from load_data import LoadInputData
 from model import ResNet50
 from train_evaluate import TrainTest
 # noinspection PyCompatibility
@@ -6,6 +7,7 @@ import configparser
 from datetime import datetime
 import getpass
 import os
+import numpy as np
 
 
 # returns a formatted string variable of current time
@@ -78,16 +80,24 @@ prdi = config.getboolean('DEFAULT', 'print_random_dataset_image')
 use_es = config.getboolean('DEFAULT', 'use_early_stopping')
 es_patience = config.getint('DEFAULT', 'early_stop_patience')
 es_monitor = config['DEFAULT']['early_stop_monitor']
+buffered_prefetch = config.getboolean('DEFAULT', 'buffered_prefetch')
+validation_split = config.getfloat('DEFAULT', 'validation_split')
 
 # Create an instance of the DataLoader class
-dl = DataLoader(height=shape[0], width=shape[1], batch_size=batch_size, parent_dir=parent_dir)
+dl = LoadInputData(height=shape[0], width=shape[1], batch_size=batch_size, parent_dir=parent_dir,
+                   val_split=validation_split, use_prefetch=buffered_prefetch)
 
 # Load the data
 train_ds, val_ds, test_ds = dl.load_data()
-
+'''for image, label in train_ds:
+    print(image)
+    print(label)
+    print(np.min(image), np.max(image))
+    break
+exit(0)
+'''
 # Print the details of the training dataset
 dl.print_dataset_details(train_ds)
-
 # Create an instance of the model class
 rn50 = ResNet50(input_shape=shape, include_top=False, weights_src=weights, learning_rate=learning_rate,
                 rotation=rotation, flip=flip, trainable_base=trainable_base, model_name=model_name)

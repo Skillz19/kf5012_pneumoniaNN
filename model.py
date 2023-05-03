@@ -6,6 +6,7 @@ from tensorflow.keras.models import Sequential, Model
 # noinspection PyUnresolvedReferences
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, \
     RandomFlip, RandomRotation
+from f1_score import F1Score
 
 
 class ResNet50:
@@ -66,6 +67,7 @@ class ResNet50:
                       loss=tf.keras.losses.CategoricalCrossentropy(from_logits=False),
                       metrics=[tf.keras.metrics.CategoricalAccuracy(name='accuracy'),
                                tf.keras.metrics.Precision(name='precision'),
-                               tf.keras.metrics.Recall(name='recall')])
-
+                               tf.keras.metrics.Recall(name='recall'),
+                               F1Score()])
+        model.summary()
         return model
