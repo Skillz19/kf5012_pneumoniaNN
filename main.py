@@ -1,13 +1,13 @@
 # from data_loader import DataLoader
 from load_data import LoadInputData
-from model import ResNet50
+from model import Network
 from train_evaluate import TrainTest
 # noinspection PyCompatibility
 import configparser
 from datetime import datetime
 import getpass
 import os
-import numpy as np
+from enum_models import Models
 
 
 # returns a formatted string variable of current time
@@ -89,20 +89,14 @@ dl = LoadInputData(height=shape[0], width=shape[1], batch_size=batch_size, paren
 
 # Load the data
 train_ds, val_ds, test_ds = dl.load_data()
-'''for image, label in train_ds:
-    print(image)
-    print(label)
-    print(np.min(image), np.max(image))
-    break
-exit(0)
-'''
 # Print the details of the training dataset
 dl.print_dataset_details(train_ds)
 # Create an instance of the model class
-rn50 = ResNet50(input_shape=shape, include_top=False, weights_src=weights, learning_rate=learning_rate,
-                rotation=rotation, flip=flip, trainable_base=trainable_base, model_name=model_name)
+nn = Network(input_shape=shape, include_top=False, weights_src=weights, learning_rate=learning_rate,
+             base_type=Models.ENUM_RES50, rotation=rotation, flip=flip, trainable_base=trainable_base,
+             model_name=model_name)
 # build custom model based on resnet 50
-model = rn50.build_resnet50()
+model = nn.build_model()
 
 # generate variables name for storing files
 time_str = get_time_str()

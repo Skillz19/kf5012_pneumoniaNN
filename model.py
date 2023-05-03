@@ -7,10 +7,11 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, \
     RandomFlip, RandomRotation
 from f1_score import F1Score
+from enum_models import Models
 
 
-class ResNet50:
-    def __init__(self, input_shape, include_top, weights_src, learning_rate,
+class Network:
+    def __init__(self, input_shape, include_top, weights_src, learning_rate, base_type,
                  rotation=0.2, flip='horizontal', trainable_base=False,
                  model_name='harbottle_pneumonia'):
         self.include_top = include_top
@@ -21,12 +22,32 @@ class ResNet50:
         self.rotation = rotation
         self.flip = flip
         self.name = model_name
+        self.base_type = base_type
 
     def build_data_augmentation(self):
         return Sequential([
             RandomFlip(self.flip),
             RandomRotation(self.rotation)
         ])
+
+    def load_model(self):
+        if self.base_type == Models.ENUM_RES50:
+            preprocess_input, base_model = self.load_resnet50()
+            return preprocess_input, base_model
+        elif self.base_type == Models.ENUM_RES50V2:
+            preprocess_input, base_model = self.load_resnet50v2()
+            return preprocess_input, base_model
+        else:
+            print('Invalid base model type')
+            exit(-1)
+
+    def load_resnet50v2(self):
+        preprocess_input = tf.keras.applications.resnet_v2.preprocess_input
+        # load the model
+        base_model = tf.keras.applications.ResNet50V2(input_shape=self.input_shape,
+                                                      include_top=self.include_top, weights=self.weights_src)
+        base_model.trainable = self.trainable_base
+        return preprocess_input, base_model
 
     def load_resnet50(self):
         preprocess_input = tf.keras.applications.resnet50.preprocess_input
@@ -54,9 +75,9 @@ class ResNet50:
         outputs = Dense(3, activation='softmax')(model)
         return Model(inputs=inputs, outputs=outputs, name=self.name)
 
-    def build_resnet50(self):
+    def build_model(self):
         data_augmentation = self.build_data_augmentation()
-        preprocess_input, base_model = self.load_resnet50()
+        preprocess_input, base_model = self.load_model()
         inputs = Input(shape=self.input_shape)
         mod = data_augmentation(inputs)
         mod = preprocess_input(mod)
