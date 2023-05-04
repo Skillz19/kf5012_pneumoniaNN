@@ -5,14 +5,14 @@ from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential, Model
 # noinspection PyUnresolvedReferences
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, \
-    RandomFlip, RandomRotation
+    RandomFlip, RandomRotation, RandomCrop, ZeroPadding2D
 from f1_score import F1Score
 from enum_models import Models
 
 
 class Network:
     def __init__(self, input_shape, include_top, weights_src, learning_rate, base_type,
-                 rotation=0.2, flip='horizontal', trainable_base=False,
+                 rotation=0.2, flip='horizontal', crop=124, pad=2,  trainable_base=False,
                  model_name='harbottle_pneumonia'):
         self.include_top = include_top
         self.weights_src = weights_src
@@ -21,13 +21,17 @@ class Network:
         self.trainable_base = trainable_base
         self.rotation = rotation
         self.flip = flip
+        self.crop = crop
+        self.pad = pad
         self.name = model_name
         self.base_type = base_type
 
     def build_data_augmentation(self):
         return Sequential([
             RandomFlip(self.flip),
-            RandomRotation(self.rotation)
+            RandomRotation(self.rotation),
+            RandomCrop(self.crop, self.crop),
+            ZeroPadding2D(self.pad)
         ])
 
     def load_model(self):
