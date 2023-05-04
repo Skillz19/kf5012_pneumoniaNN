@@ -1,4 +1,3 @@
-# from data_loader import DataLoader
 from load_data import LoadInputData
 from model import Network
 from train_evaluate import TrainTest

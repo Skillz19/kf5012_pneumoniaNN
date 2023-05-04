@@ -37,9 +37,42 @@ class Network:
         elif self.base_type == Models.ENUM_RES50V2:
             preprocess_input, base_model = self.load_resnet50v2()
             return preprocess_input, base_model
+        elif self.base_type == Models.ENUM_INCEPTIONV3:
+            preprocess_input, base_model = self.load_inceptionv3()
+            return preprocess_input, base_model
+        elif self.base_type == Models.ENUM_EFFICIENTNET:
+            preprocess_input, base_model = self.load_efficientnet()
+            return preprocess_input, base_model
+        elif self.base_type == Models.ENUM_EFFICIENTNETV2:
+            preprocess_input, base_model = self.load_efficientnetv2()
+            return preprocess_input, base_model
         else:
             print('Invalid base model type')
             exit(-1)
+
+    def load_efficientnetv2(self):
+        preprocess_input = tf.keras.applications.efficientnet.preprocess_input
+        # load the model
+        base_model = tf.keras.applications.EfficientNetB0(input_shape=self.input_shape,
+                                                          include_top=self.include_top, weights=self.weights_src)
+        base_model.trainable = self.trainable_base
+        return preprocess_input, base_model
+
+    def load_efficientnet(self):
+        preprocess_input = tf.keras.applications.efficientnet_v2.preprocess_input
+        # load the model
+        base_model = tf.keras.applications.EfficientNetB0(input_shape=self.input_shape,
+                                                          include_top=self.include_top, weights=self.weights_src)
+        base_model.trainable = self.trainable_base
+        return preprocess_input, base_model
+
+    def load_inceptionv3(self):
+        preprocess_input = tf.keras.applications.inception_v3.preprocess_input
+        # load the model
+        base_model = tf.keras.applications.InceptionV3(input_shape=self.input_shape,
+                                                       include_top=self.include_top, weights=self.weights_src)
+        base_model.trainable = self.trainable_base
+        return preprocess_input, base_model
 
     def load_resnet50v2(self):
         preprocess_input = tf.keras.applications.resnet_v2.preprocess_input
