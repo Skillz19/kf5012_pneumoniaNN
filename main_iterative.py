@@ -164,11 +164,11 @@ for custom_layer in custom_layer:
             with open(result_name, 'a') as f:
                 f.write('\n'+msg)
 
-            f1_score = (hist.history['f1_score'][epochs-1], hist.history['val_f1_score'][epochs-1], test_f1_score)
-            accuracy = (hist.history['accuracy'][epochs-1], hist.history['val_accuracy'][epochs-1], test_accuracy)
-            precision = (hist.history['precision'][epochs-1], hist.history['val_precision'][epochs-1], test_precision)
-            recall = (hist.history['recall'][epochs-1], hist.history['val_recall'][epochs-1], test_recall)
-            loss = (hist.history['loss'][epochs-1], hist.history['val_loss'][epochs-1], test_loss)
+            f1_score = (hist.history['f1_score'][-1], hist.history['val_f1_score'][-1], test_f1_score)
+            accuracy = (hist.history['accuracy'][-1], hist.history['val_accuracy'][-1], test_accuracy)
+            precision = (hist.history['precision'][-1], hist.history['val_precision'][-1], test_precision)
+            recall = (hist.history['recall'][-1], hist.history['val_recall'][-1], test_recall)
+            loss = (hist.history['loss'][-1], hist.history['val_loss'][-1], test_loss)
 
             record.write_values(activation, f1_score, accuracy, precision, recall, loss)
             record.save()

@@ -363,3 +363,6 @@ Train time: 2023_05_07 02_58 -  F1_Score/Accuracy/precision/recall/ scores on th
  F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.786/0.781/0.805/0.769 loss: 0.637
  F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.765/0.767/0.779/0.752 loss: 0.648
  F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.706/0.724/0.754/0.664 loss: 0.696
+ F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.702/0.704/0.733/0.673 loss: 0.890
+ F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.650/0.648/0.684/0.619 loss: 0.985
+ F1_Score/Accuracy/precision/recall/ scores on the test dataset: 0.758/0.755/0.806/0.716 loss: 0.683
