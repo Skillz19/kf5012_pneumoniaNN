@@ -30,7 +30,9 @@ def get_prefix():
 def get_model_name(time):
     name = get_prefix() + '_' + time + ".h5"
     name = './models/' + name
-    return name
+    plot_name = get_prefix() + '_' + time + ".png"
+    plot_name = './models/' + plot_name
+    return name, plot_name
 
 
 # returns name for saving train test results to file
@@ -93,14 +95,14 @@ dl.print_dataset_details(train_ds)
 # Create an instance of the model class
 nn = Network(input_shape=shape, include_top=False, weights_src=weights, learning_rate=learning_rate,
              base_type=Models.ENUM_RES50, rotation=rotation, flip=flip, trainable_base=trainable_base,
-             model_name=model_name)
+             model_name=model_name, activation='gelu')
 # build custom model based on resnet 50
 model = nn.build_model()
 
 # generate variables name for storing files
 time_str = get_time_str()
 plot_fig_name = get_plot_name(time_str)
-saved_model_name = get_model_name(time_str)
+saved_model_name, model_plot_name = get_model_name(time_str)
 
 settings_name = get_settings_name(time_str)
 # create settings directory if not exist
@@ -113,7 +115,9 @@ with open(settings_name, 'w') as configfile:
 train = TrainTest(epochs, train_ds, test_ds, val_ds, plot_learning_curve, plot_fig_name, prdi,
                   use_es, es_patience, es_monitor)
 # train and evaluate model
-hist, result = train.train(model)
+hist = train.train(model)
+
+result = train.evaluate(model)
 
 result_name = get_result_name()
 create_missing_directory(result_name)
@@ -122,3 +126,4 @@ with open(result_name, 'a') as txt:
     txt.write('\nTrain time: '+time_str+' - '+result)
 
 model.save(saved_model_name)
+train.plot_model(model, model_plot_name)

@@ -5,7 +5,7 @@ from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential, Model
 # noinspection PyUnresolvedReferences
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, \
-    RandomFlip, RandomRotation, RandomCrop, ZeroPadding2D
+    RandomFlip, RandomRotation, RandomCrop, ZeroPadding2D, GlobalAveragePooling2D
 from f1_score import F1Score
 from enum_models import Models
 
@@ -13,7 +13,7 @@ from enum_models import Models
 class Network:
     def __init__(self, input_shape, include_top, weights_src, learning_rate, base_type,
                  rotation=0.2, flip='horizontal', crop=124, pad=2,  trainable_base=False,
-                 model_name='harbottle_pneumonia'):
+                 model_name='harbottle_pneumonia', custom_layer=1, activation='relu'):
         self.include_top = include_top
         self.weights_src = weights_src
         self.learning_rate = learning_rate
@@ -25,6 +25,8 @@ class Network:
         self.pad = pad
         self.name = model_name
         self.base_type = base_type
+        self.custom_layer = custom_layer
+        self.activation = activation
 
     def build_data_augmentation(self):
         return Sequential([
@@ -226,12 +228,23 @@ class Network:
         base_model.trainable = self.trainable_base
         return preprocess_input, base_model
 
-    @staticmethod
-    def add_custom_layers(model):
-        model = Conv2D(32, (3, 3), activation='relu', padding='same')(model)
+    def add_custom_layers(self, model):
+        if self.custom_layer == 1:
+            model = self.add_custom_layers1(model)
+        elif self.custom_layer == 2:
+            model = self.add_custom_layers2(model)
+        elif self.custom_layer == 3:
+            model = self.add_custom_layers3(model)
+        else:
+            print("Undefined custom layer")
+            exit(-1)
+        return model
+
+    def add_custom_layers1(self, model):
+        model = Conv2D(32, (3, 3), activation=self.activation, padding='same')(model)
         model = Dropout(0.3)(model)
         model = MaxPooling2D(pool_size=(2, 2))(model)
-        model = Conv2D(32, (3, 3), activation='relu', padding='same')(model)
+        model = Conv2D(32, (3, 3), activation=self.activation, padding='same')(model)
         model = BatchNormalization()(model)
         model = Dropout(0.3)(model)
         # switch to vectors for classification
@@ -241,17 +254,32 @@ class Network:
         return model
 
     @staticmethod
-    def add_custom_layers2(model):
-        model = Conv2D(64, (3, 3), activation='relu', padding='valid', strides=2, dilation_rate=(1, 1))(model)
+    def add_custom_layers3(model):
+        model = GlobalAveragePooling2D()(model)
+        model = Dropout(.2)(model)
+        model = Dense(512)(model)
         model = BatchNormalization()(model)
-        model = Conv2D(32, (3, 3), activation='relu', padding='valid', strides=2, dilation_rate=(1, 1))(model)
+        model = Dense(128)(model)
         model = BatchNormalization()(model)
-        model = Conv2D(256, (3, 3), activation='relu', padding='valid', strides=2, dilation_rate=(1, 1))(model)
+        model = Dense(32)(model)
         model = BatchNormalization()(model)
-        model = Conv2D(512, (3, 3), activation='relu', padding='valid', strides=2, dilation_rate=(1, 1))(model)
+        model = Dense(8)(model)
+
+        return model
+
+    def add_custom_layers2(self, model):
+        model = Conv2D(1024, (3, 3), activation=self.activation, padding='same',)(model)
+        model = BatchNormalization()(model)
+        model = Conv2D(512, (3, 3), activation=self.activation, padding='same')(model)
+        model = BatchNormalization()(model)
+        model = Conv2D(256, (3, 3), activation=self.activation, padding='same')(model)
         model = BatchNormalization()(model)
         model = Flatten()(model)
-        model = Dense(100)(model)
+        model = Dense(1000)(model)
+        model = Dropout(0.3)(model)
+        model = Dense(600)(model)
+        model = Dropout(0.3)(model)
+        model = Dense(200)(model)
         model = Dropout(0.3)(model)
 
         return model

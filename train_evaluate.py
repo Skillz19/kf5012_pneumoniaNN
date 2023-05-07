@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
+from keras.utils.vis_utils import plot_model
 
 
 class TrainTest:
@@ -24,7 +25,7 @@ class TrainTest:
         image_batch, label_batch = next(iter(self.train_ds))
 
         # Define a list of class names
-        class_names = ['class_0', 'class_1', 'class_2']
+        class_names = ['Normal', 'Bacterial Pneumonia', 'Viral Pneumonia']
 
         # Display the images with their corresponding labels
         fig, axes = plt.subplots(nrows=3, ncols=4, figsize=(10, 10))
@@ -54,13 +55,15 @@ class TrainTest:
                          else [tf.keras.callbacks.EarlyStopping(monitor=self.early_stop_monitor,
                                                                 patience=self.early_stop_patience,
                                                                 verbose=1)])
+        self.plot_learning_curves(hist)
+        return hist
+
+    def evaluate(self, model):
         loss, accuracy, precision, recall, f1_score = model.evaluate(self.test_ds)
         msg = f' F1_Score/Accuracy/precision/recall/ scores on the test dataset: '\
               f'{f1_score:.3f}/{accuracy:.3f}/{precision:.3f}/{recall:.3f} loss: {loss:.3f}'
         print(msg)
-        self.plot_learning_curves(hist)
-        return hist, msg
-
+        return msg
     def plot_learning_curves(self, hist):
         if self.plot_learn_curve:
             acc = hist.history['accuracy']
@@ -106,3 +109,7 @@ class TrainTest:
                 os.makedirs(path)
             if self.plot_filename is not None:
                 fig.savefig(self.plot_filename)
+
+    @staticmethod
+    def plot_model(model, plot_filename):
+        plot_model(model, to_file=plot_filename, show_shapes=True, show_layer_names=True)
