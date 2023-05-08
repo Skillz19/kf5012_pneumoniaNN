@@ -95,7 +95,7 @@ dl.print_dataset_details(train_ds)
 # Create an instance of the model class
 nn = Network(input_shape=shape, include_top=False, weights_src=weights, learning_rate=learning_rate,
              base_type=Models.ENUM_RES50, rotation=rotation, flip=flip, trainable_base=trainable_base,
-             model_name=model_name, activation='gelu')
+             model_name=model_name, activation='elu', custom_layer=1)
 # build custom model based on resnet 50
 model = nn.build_model()
 

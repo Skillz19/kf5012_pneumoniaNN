@@ -112,6 +112,7 @@ dl.print_dataset_details(train_ds)
 
 # test over different hyperparameters
 custom_layer = (1, 2, 3)
+create_missing_directory(record_name)
 record_name = get_record_name(get_time_str())
 record = Record(record_name)
 for custom_layer in custom_layer:
@@ -236,5 +237,4 @@ for custom_layer in custom_layer:
             del hist
             del nn
             gc.collect()
-create_missing_directory(record_name)
 record.save()

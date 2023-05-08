@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/pneumonia_detector.iml" filepath="$PROJECT_DIR$/.idea/pneumonia_detector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pneumonia_sln_tester/.idea/pneumonia_sln_tester.iml" filepath="$PROJECT_DIR$/../pneumonia_sln_tester/.idea/pneumonia_sln_tester.iml" />
     </modules>
   </component>
 </project>

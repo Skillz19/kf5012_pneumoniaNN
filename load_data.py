@@ -22,12 +22,17 @@ class LoadInputData:
                                                                                    self.image_height, self.image_width),
                                                                                batch_size=self.batch_size,
                                                                                label_mode='categorical')
+        test_ds = self.load_test_data()
+
+        self.class_names = train_ds.class_names
+        return train_ds, val_ds, test_ds
+
+    def load_test_data(self):
         test_ds = tf.keras.preprocessing.image_dataset_from_directory(self.test_dir, seed=123,
                                                                       image_size=(self.image_height, self.image_width),
                                                                       batch_size=self.batch_size,
                                                                       label_mode='categorical')
-        self.class_names = train_ds.class_names
-        return train_ds, val_ds, test_ds
+        return test_ds
 
     def print_dataset_details(self, dataset):
         print(self.class_names)
