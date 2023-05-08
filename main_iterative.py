@@ -112,8 +112,8 @@ dl.print_dataset_details(train_ds)
 
 # test over different hyperparameters
 custom_layer = (1, 2, 3)
-create_missing_directory(record_name)
 record_name = get_record_name(get_time_str())
+create_missing_directory(record_name)
 record = Record(record_name)
 for custom_layer in custom_layer:
     record.write_layer(custom_layer)
